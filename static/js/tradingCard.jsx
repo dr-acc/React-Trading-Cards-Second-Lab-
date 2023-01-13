@@ -48,8 +48,7 @@ const tradingCardData = [
     cardId: 8,
   },
 ];
-
-function TradingCard(props) {
+function TradingCard(props) { 
   return (
     <div className="card">
       <p>Name: {props.name}</p>
@@ -58,11 +57,30 @@ function TradingCard(props) {
     </div>
   );
 }
+// From Lab: "Since cards changing over time, we'll use state in this app"
 
 function TradingCardContainer() {
+
+  const floatCard = {
+    name: 'Float',
+    skill: 'baking pretzels',
+    imgUrl: 'static/img/float.jpg'
+  };
+  
+  const [cards, setCards] = React.useState([floatCard])
+
   const tradingCards = [];
 
-  for (const currentCard of tradingCardData) {
+  React.useEffect(() => {
+  fetch('/cards.json')
+    .then((response) => response.json())
+    .then((responseData) => {
+      setCards(responseData.cards);
+  });
+}, []);
+
+  
+  for (const currentCard of cards) {
     tradingCards.push(
       <TradingCard
         key={currentCard.cardId}
@@ -74,6 +92,12 @@ function TradingCardContainer() {
   }
 
   return <div className="grid">{tradingCards}</div>;
+
 }
 
 ReactDOM.render(<TradingCardContainer />, document.getElementById('container'));
+
+//Example of useEffect below
+React.useEffect(() => {
+  document.title = `You clicked ${count} times`;
+})
